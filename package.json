@@ -1,18 +1,25 @@
 {
   "name": "javascript-deobfuscator",
   "version": "1.0.0",
+  "license": "MIT",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "repository": "https://github.com/saucesteals/javascript-deobfuscator",
   "author": "Daniel <saucesteals@gmail.com>",
-  "files": [
-    "dist",
-    "bin"
-  ],
-  "bin": {
-    "javascript-deobfuscator": "./bin/javascript-deobfuscator"
+  "scripts": {
+    "build": "tsc",
+    "jest": "jest",
+    "test": "yarn mustlint && yarn mustformat && yarn jest",
+    "cli": "yarn build && ./bin/javascript-deobfuscator",
+    "lint": "eslint",
+    "mustlint": "yarn lint --max-warnings=0",
+    "format": "prettier -c src/** --write",
+    "mustformat": "prettier -c src/**",
+    "prepare": "husky install .husky",
+    "commit": "cz",
+    "lint-staged": "lint-staged",
+    "prepublish": "yarn test && yarn build"
   },
-  "license": "MIT",
   "dependencies": {
     "winston": "^3.3.3",
     "yargs": "^17.3.0"
@@ -24,20 +31,6 @@
     "**/*.{ts,tsx}": [
       "yarn mustlint"
     ]
-  },
-  "scripts": {
-    "build": "tsc",
-    "jest": "jest",
-    "test": "yarn mustlint && yarn mustformat && yarn jest",
-    "cli": "yarn build && ./bin/javascript-deobfuscator",
-    "lint": "eslint",
-    "mustlint": "yarn lint --max-warnings=0",
-    "format": "prettier -c src/** --write",
-    "mustformat": "prettier -c src/**",
-    "prepare": "husky install .config/husky",
-    "commit": "cz",
-    "lint-staged": "lint-staged",
-    "prepublish": "yarn test && yarn build"
   },
   "config": {
     "commitizen": {
@@ -62,5 +55,12 @@
     "prettier": "^2.5.1",
     "ts-jest": "^27.1.1",
     "typescript": "^4.5.4"
+  },
+  "files": [
+    "dist",
+    "bin"
+  ],
+  "bin": {
+    "javascript-deobfuscator": "./bin/javascript-deobfuscator"
   }
 }
