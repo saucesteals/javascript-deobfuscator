@@ -1,0 +1,21 @@
+# Logs
+logs
+*.log
+
+# Runtime data
+pids
+*.pid
+*.seed
+
+# Build
+dist
+
+# Dependency directory
+node_modules
+
+# OSX
+.DS_Store
+
+# JS helpers
+jest.config.js
+javascript-deobfuscator
