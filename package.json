@@ -1,6 +1,6 @@
 {
   "name": "javascript-deobfuscator",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "license": "MIT",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
@@ -49,6 +49,7 @@
     "eslint-import-resolver-typescript": "^2.5.0",
     "eslint-plugin-import": "^2.25.3",
     "eslint-plugin-jest": "^25.3.0",
+    "eslint-plugin-jsdoc": "^37.2.2",
     "husky": "^7.0.4",
     "jest": "^27.4.5",
     "lint-staged": "^12.1.2",

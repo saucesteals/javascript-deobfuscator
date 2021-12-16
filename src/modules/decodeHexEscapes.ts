@@ -1,6 +1,17 @@
 import { BaseModule, ModuleOptions } from "../structures/baseModule";
 
+/**
+ * Decodes escaped hex characters
+ *
+ * @augments BaseModule
+ * @example
+ * module.process('const str = "\\x68\\x65\\x6c\\x6c\\x6f"')
+ * 'const str = 'const str = "hello world"'
+ */
 export class DecodeHexEscapes extends BaseModule {
+  /**
+   * @param {ModuleOptions} options Module options
+   */
   constructor(options?: ModuleOptions) {
     super("DecodeHexEscapes", options);
   }

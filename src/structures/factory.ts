@@ -9,13 +9,17 @@ export interface FactoryConfig {
   loggerLevel?: LogLevel;
 }
 
+/**
+ * DeobfuscatorFactory handles using multiple modules together
+ */
 export class DeobfuscatorFactory {
   private source: string;
   private config: FactoryConfig;
   private logger: Logger;
 
   /**
-   * DeobfuscatorFactory handles using multiple modules together
+   * @param {string} source Source code
+   * @param {FactoryConfig} config Factory config
    */
   constructor(source: string, config: FactoryConfig) {
     this.source = source;
@@ -25,7 +29,8 @@ export class DeobfuscatorFactory {
 
   /**
    * Runs all modules in order
-   * @returns Final result of all modules
+   *
+   * @returns {string} Final result of all modules
    */
   public run(): string {
     for (const module of this.config.modules) {
@@ -41,6 +46,9 @@ export class DeobfuscatorFactory {
   /**
    * Similar to {@link DeobfuscatorFactory.run}, {@link DeobfuscatorFactory.write} also runs all modules in order,
    * then writes the result to outPath file
+   *
+   * @param {PathLike} outPath Path to write to
+   * @returns {Promise<void>}
    */
   public async write(outPath: PathLike): Promise<void> {
     const result = this.run();
@@ -49,6 +57,9 @@ export class DeobfuscatorFactory {
 
   /**
    * Sync version of {@link DeobfuscatorFactory.write}
+   *
+   * @param {PathLike} outPath Path to write to
+   * @returns {void}
    */
   public writeSync(outPath: PathLike): void {
     const result = this.run();
@@ -57,8 +68,12 @@ export class DeobfuscatorFactory {
 
   /**
    * Creates a {@link DeobfuscatorFactory} from a file
+   *
+   * @param {PathLike} inPath Path to read from
+   * @param {FactoryConfig} config Factory Config
+   * @returns {Promise<DeobfuscatorFactory>} The created DeobfuscatorFactory
    */
-  static async fromFile(inPath: PathLike, config: FactoryConfig) {
+  static async fromFile(inPath: PathLike, config: FactoryConfig): Promise<DeobfuscatorFactory> {
     const contents = await readFile(inPath, "utf-8");
 
     return new DeobfuscatorFactory(contents, config);
@@ -66,8 +81,12 @@ export class DeobfuscatorFactory {
 
   /**
    * Sync version of {@link DeobfuscatorFactory.fromFile}
+   *
+   * @param {PathLike} inPath Path to read from
+   * @param {FactoryConfig} config Factory Config
+   * @returns {DeobfuscatorFactory} The created DeobfuscatorFactory
    */
-  static fromFileSync(inPath: PathLike, config: FactoryConfig) {
+  static fromFileSync(inPath: PathLike, config: FactoryConfig): DeobfuscatorFactory {
     const contents = readFileSync(inPath, "utf-8");
     return new DeobfuscatorFactory(contents, config);
   }
