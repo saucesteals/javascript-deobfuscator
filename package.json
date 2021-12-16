@@ -19,22 +19,25 @@
   },
   "lint-staged": {
     "**/*.{ts,tsx,json,css}": [
-      "npm run prettier"
+      "yarn prettier"
     ],
     "**/*.{ts,tsx}": [
-      "npm run lint --max-warnings=0"
+      "yarn mustlint"
     ]
   },
   "scripts": {
     "build": "tsc",
-    "test": "jest",
+    "jest": "jest",
+    "test": "yarn mustlint && yarn mustformat && yarn jest",
     "cli": "yarn build && ./bin/javascript-deobfuscator",
     "lint": "eslint",
-    "prettier": "prettier -c src/** --write",
-    "prettier:check": "prettier -c src/**",
+    "mustlint": "yarn lint --max-warnings=0",
+    "format": "prettier -c src/** --write",
+    "mustformat": "prettier -c src/**",
     "prepare": "husky install .config/husky",
     "commit": "cz",
-    "lint-staged": "lint-staged"
+    "lint-staged": "lint-staged",
+    "prepublish": "yarn test && yarn build"
   },
   "config": {
     "commitizen": {
