@@ -1,3 +1,7 @@
+
+# Dev testing files
+*.dev.ts
+
 # Logs
 logs
 *.log

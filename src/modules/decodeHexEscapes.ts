@@ -12,7 +12,7 @@ export class DecodeHexEscapes extends BaseModule {
   /**
    * @param {ModuleOptions} options Module options
    */
-  constructor(options?: ModuleOptions) {
+  constructor(options: ModuleOptions = {}) {
     super("DecodeHexEscapes", options);
   }
 

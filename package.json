@@ -18,9 +18,11 @@
     "prepare": "husky install .husky",
     "commit": "cz",
     "lint-staged": "lint-staged",
-    "prepublish": "yarn test && yarn build"
+    "prepublish": "yarn test && yarn build",
+    "dev": "ts-node-dev --respawn ./src/test.dev.ts"
   },
   "dependencies": {
+    "@babel/core": "^7.16.5",
     "winston": "^3.3.3",
     "yargs": "^17.3.0"
   },
@@ -55,6 +57,7 @@
     "lint-staged": "^12.1.2",
     "prettier": "^2.5.1",
     "ts-jest": "^27.1.1",
+    "ts-node-dev": "^1.1.8",
     "typescript": "^4.5.4"
   },
   "files": [

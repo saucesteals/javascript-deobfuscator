@@ -8,16 +8,16 @@ export interface ModuleOptions {
 /**
  * Abstract baseclass for modules
  */
-export abstract class BaseModule {
+export abstract class BaseModule<O extends ModuleOptions = ModuleOptions> {
   public readonly name: string;
   protected logger: Logger;
-  private options: ModuleOptions;
+  protected options: O;
 
   /**
    * @param {string} name The module's name
    * @param {ModuleOptions} [options={}] Module options
    */
-  constructor(name: string, options: ModuleOptions = {}) {
+  constructor(name: string, options: O) {
     this.options = options;
     this.name = name;
     this.logger = makeLogger(this.name, this.options.loggerLevel);
@@ -28,5 +28,5 @@ export abstract class BaseModule {
    *
    * @param source Source code to process
    */
-  public abstract process(source: string): string;
+  public abstract process(source: string): string | Promise<string>;
 }

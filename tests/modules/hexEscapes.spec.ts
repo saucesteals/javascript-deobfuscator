@@ -1,4 +1,4 @@
-import { DecodeHexEscapes } from "../src/modules/decodeHexEscapes";
+import { DecodeHexEscapes } from "../../src/modules/decodeHexEscapes";
 
 describe("Decoding hex escapes", () => {
   it('should decode to ["hello world"]', () => {

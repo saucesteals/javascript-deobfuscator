@@ -1,5 +1,5 @@
 import { BaseModule } from "./baseModule";
-import { writeFileSync, readFileSync, PathLike } from "fs";
+import { readFileSync, PathLike } from "fs";
 import { writeFile, readFile } from "fs/promises";
 import { Logger } from "winston";
 import { LogLevel, makeLogger } from "../utils/logger";
@@ -32,11 +32,11 @@ export class DeobfuscatorFactory {
    *
    * @returns {string} Final result of all modules
    */
-  public run(): string {
+  public async run(): Promise<string> {
     for (const module of this.config.modules) {
       const start = Date.now();
       this.logger.info(`Processing module ${module.name}`);
-      this.source = module.process(this.source);
+      this.source = await Promise.resolve(module.process(this.source));
       this.logger.info(`Processed module ${module.name} in ${Date.now() - start} ms`);
     }
 
@@ -51,19 +51,8 @@ export class DeobfuscatorFactory {
    * @returns {Promise<void>}
    */
   public async write(outPath: PathLike): Promise<void> {
-    const result = this.run();
+    const result = await this.run();
     return writeFile(outPath, result, "utf-8");
-  }
-
-  /**
-   * Sync version of {@link DeobfuscatorFactory.write}
-   *
-   * @param {PathLike} outPath Path to write to
-   * @returns {void}
-   */
-  public writeSync(outPath: PathLike): void {
-    const result = this.run();
-    return writeFileSync(outPath, result, "utf-8");
   }
 
   /**
