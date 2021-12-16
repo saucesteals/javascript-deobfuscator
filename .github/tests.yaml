@@ -17,10 +17,6 @@ jobs:
 
     runs-on: ${{ matrix.os }}
 
-    defaults:
-      run:
-        shell: bash
-
     steps:
       - name: Checkout the release target branch
         uses: actions/checkout@v2
