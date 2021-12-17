@@ -15,7 +15,7 @@ export abstract class BaseModule<O extends ModuleOptions = ModuleOptions> {
 
   /**
    * @param {string} name The module's name
-   * @param {ModuleOptions} [options={}] Module options
+   * @param {ModuleOptions} [options] Module options
    */
   constructor(name: string, options: O) {
     this.options = options;
@@ -26,6 +26,7 @@ export abstract class BaseModule<O extends ModuleOptions = ModuleOptions> {
   /**
    * Processes source code by the module's specifications
    *
+   * @abstract
    * @param source Source code to process
    */
   public abstract process(source: string): string | Promise<string>;

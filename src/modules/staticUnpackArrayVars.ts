@@ -1,19 +1,15 @@
-import { BaseModule, ModuleOptions } from "../structures/baseModule";
-import { transformAsync, PluginItem, TransformOptions } from "@babel/core";
+import { PluginItem } from "@babel/core";
 import { isVariableDeclaration, isIdentifier, isArrayExpression } from "@babel/types";
+import { BabelBaseModule, BabelModuleOptions } from "../structures/babelBaseModule";
 
 export const DEFAULT_PACKER_VARIABLE_REGEX = /_[$A-Za-z0-9]+/;
 
-export interface UnpackArrayVarsOptions extends ModuleOptions {
+export interface UnpackArrayVarsOptions extends BabelModuleOptions {
   /**
    * A {@link RegExp} object to match variable names
    * that are used to pack variable values
    */
   varMatch: RegExp;
-  /**
-   * {@link TransformOptions} passed into babel
-   */
-  babelOptions?: TransformOptions;
 }
 
 /**
@@ -30,7 +26,7 @@ export interface UnpackArrayVarsOptions extends ModuleOptions {
  * //  var one = "packed";
  * //  var two = "values";
  */
-export class StaticUnpackArrayVars extends BaseModule<UnpackArrayVarsOptions> {
+export class StaticUnpackArrayVars extends BabelBaseModule<UnpackArrayVarsOptions> {
   /**
    * @param {UnpackArrayVarsOptions} options Module options
    */
@@ -43,7 +39,7 @@ export class StaticUnpackArrayVars extends BaseModule<UnpackArrayVarsOptions> {
     super("StaticUnpackArrayVars", options);
   }
 
-  private babelPlugin(): PluginItem {
+  public getBabelPlugin(): PluginItem {
     return {
       visitor: {
         MemberExpression: (path) => {
@@ -109,20 +105,5 @@ export class StaticUnpackArrayVars extends BaseModule<UnpackArrayVarsOptions> {
         },
       },
     };
-  }
-
-  public async process(source: string): Promise<string> {
-    const output = await transformAsync(source, {
-      ...this.options.babelOptions,
-      plugins: [this.babelPlugin()],
-    });
-    if (!output) {
-      throw new Error(`Babel returned ${typeof output} output`);
-    }
-
-    if (!output.code) {
-      throw new Error(`Babel returned ${typeof output.code} code`);
-    }
-    return output.code;
   }
 }

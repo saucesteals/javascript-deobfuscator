@@ -3,10 +3,14 @@ import { readFileSync, PathLike } from "fs";
 import { writeFile, readFile } from "fs/promises";
 import { Logger } from "winston";
 import { LogLevel, makeLogger } from "../utils/logger";
+import { PluginItem, transformAsync, TransformOptions } from "@babel/core";
+import { isBabelModule } from "./babelBaseModule";
 
 export interface FactoryConfig {
   modules: BaseModule[];
   loggerLevel?: LogLevel;
+  babelOptions?: TransformOptions;
+  combineBabelModules?: boolean;
 }
 
 /**
@@ -33,12 +37,58 @@ export class DeobfuscatorFactory {
    * @returns {string} Final result of all modules
    */
   public async run(): Promise<string> {
+    if (this.config.combineBabelModules) {
+      await this.runBabelModules();
+    }
+
     for (const module of this.config.modules) {
+      if (this.config.combineBabelModules && isBabelModule(module)) continue;
+
       const start = Date.now();
       this.logger.info(`Processing module ${module.name}`);
       this.source = await Promise.resolve(module.process(this.source));
       this.logger.info(`Processed module ${module.name} in ${Date.now() - start} ms`);
     }
+
+    return this.source;
+  }
+
+  private getAllBabelPlugins(): PluginItem[] {
+    const babelPlugins = [];
+
+    for (const module of this.config.modules) {
+      if (isBabelModule(module)) babelPlugins.push(module.getBabelPlugin());
+    }
+
+    return babelPlugins;
+  }
+
+  /**
+   * Runs all babel plugin modules in order
+   *
+   * @returns {string} Final result of all modules
+   */
+  public async runBabelModules(): Promise<string> {
+    const plugins = this.getAllBabelPlugins();
+
+    const start = Date.now();
+    this.logger.info(`Processing ${plugins.length} babel plugins`);
+    const output = await transformAsync(this.source, {
+      ...this.config.babelOptions,
+      plugins,
+    });
+
+    if (!output) {
+      throw new Error(`Babel returned ${typeof output} output`);
+    }
+
+    if (!output.code) {
+      throw new Error(`Babel returned ${typeof output.code} code`);
+    }
+
+    this.logger.info(`Processed ${plugins.length} babel plugins in ${Date.now() - start}ms`);
+
+    this.source = output.code;
 
     return this.source;
   }

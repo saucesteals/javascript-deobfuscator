@@ -1,18 +1,11 @@
-import { BaseModule, ModuleOptions } from "../structures/baseModule";
-import { transformAsync, PluginItem, TransformOptions } from "@babel/core";
+import { PluginItem } from "@babel/core";
 import { isValidIdentifier, identifier } from "@babel/types";
-
-export interface TransformPropertyAccessOptions extends ModuleOptions {
-  /**
-   * {@link TransformOptions} passed into babel
-   */
-  babelOptions?: TransformOptions;
-}
+import { BabelBaseModule, BabelModuleOptions } from "../structures/babelBaseModule";
 
 /**
  * Transforms property access to dot notation if possible
  *
- * @augments BaseModule
+ * @augments BabelBaseModule
  * @example
  * module.process(`
  *   var arr = {one: "test"};
@@ -21,15 +14,15 @@ export interface TransformPropertyAccessOptions extends ModuleOptions {
  *   var arr = {one: "test"};
  *   var one = arr.one
  */
-export class TransformPropertyAccess extends BaseModule<TransformPropertyAccessOptions> {
+export class TransformPropertyAccess extends BabelBaseModule {
   /**
-   * @param {ModuleOptions} options Module options
+   * @param {BabelModuleOptions} options Module options
    */
-  constructor(options: TransformPropertyAccessOptions = { babelOptions: { retainLines: true } }) {
+  constructor(options: BabelModuleOptions = { babelOptions: { retainLines: true } }) {
     super("StaticUnpackArrayVars", options);
   }
 
-  private babelPlugin(): PluginItem {
+  public getBabelPlugin(): PluginItem {
     return {
       visitor: {
         MemberExpression: (path) => {
@@ -50,20 +43,5 @@ export class TransformPropertyAccess extends BaseModule<TransformPropertyAccessO
         },
       },
     };
-  }
-
-  public async process(source: string): Promise<string> {
-    const output = await transformAsync(source, {
-      ...this.options.babelOptions,
-      plugins: [this.babelPlugin()],
-    });
-    if (!output) {
-      throw new Error(`Babel returned ${typeof output} output`);
-    }
-
-    if (!output.code) {
-      throw new Error(`Babel returned ${typeof output.code} code`);
-    }
-    return output.code;
   }
 }
